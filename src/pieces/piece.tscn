@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://bn1eiuv31hubq"]
+
+[ext_resource type="Script" path="res://src/pieces/piece.gd" id="1_qr58g"]
+[ext_resource type="Texture2D" uid="uid://sqdxggfx1oy6" path="res://assets/gfx/128h/w_king_png_128px.png" id="2_7hybx"]
+[ext_resource type="Texture2D" uid="uid://dat6l43oq3o5c" path="res://assets/gfx/128h/b_king_png_128px.png" id="2_jtaej"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nx2wu"]
+size = Vector2(128, 128)
+
+[node name="Piece" type="Area2D"]
+script = ExtResource("1_qr58g")
+white = ExtResource("2_7hybx")
+black = ExtResource("2_jtaej")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_jtaej")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_nx2wu")
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

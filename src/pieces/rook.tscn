@@ -1,0 +1,11 @@
+[gd_scene load_steps=5 format=3 uid="uid://b60wrg0uswvex"]
+
+[ext_resource type="PackedScene" uid="uid://bn1eiuv31hubq" path="res://src/pieces/piece.tscn" id="1_pwl1c"]
+[ext_resource type="Texture2D" uid="uid://bu77l1lhfktpg" path="res://assets/gfx/128h/w_rook_png_128px.png" id="2_lg138"]
+[ext_resource type="Script" path="res://src/pieces/rook.gd" id="2_ot326"]
+[ext_resource type="Texture2D" uid="uid://dxqc1m6li1cx2" path="res://assets/gfx/128h/b_rook_png_128px.png" id="3_y8e3c"]
+
+[node name="Rook" instance=ExtResource("1_pwl1c")]
+script = ExtResource("2_ot326")
+white = ExtResource("2_lg138")
+black = ExtResource("3_y8e3c")

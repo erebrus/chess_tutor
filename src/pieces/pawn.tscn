@@ -1,0 +1,11 @@
+[gd_scene load_steps=5 format=3 uid="uid://bune2q65w14st"]
+
+[ext_resource type="PackedScene" uid="uid://bn1eiuv31hubq" path="res://src/pieces/piece.tscn" id="1_lxi6b"]
+[ext_resource type="Script" path="res://src/pieces/pawn.gd" id="2_a1hrg"]
+[ext_resource type="Texture2D" uid="uid://dyimcplwpva6v" path="res://assets/gfx/128h/w_pawn_png_128px.png" id="2_ad0dt"]
+[ext_resource type="Texture2D" uid="uid://jck4mkcjgc7o" path="res://assets/gfx/128h/b_pawn_png_128px.png" id="3_on3na"]
+
+[node name="Pawn" instance=ExtResource("1_lxi6b")]
+script = ExtResource("2_a1hrg")
+white = ExtResource("2_ad0dt")
+black = ExtResource("3_on3na")

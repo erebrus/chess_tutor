@@ -52,15 +52,29 @@ func _start_drag():
 	dragging = true
 	original_position = global_position
 	global_position = get_global_mouse_position()
+	Events.piece_selected.emit(self)
 	
 func _stop_drag():
 	dragging = false
 	global_position = original_position
+	Events.piece_unselected.emit(self)
 	
 
-func get_valid_moves()->Array:
+func get_valid_moves(board:Board)->Array:
 	return []
 	
 func move_to(_position:Position)->void:
 	moved=true
 	pass
+
+func add_if_valid_move_or_take(board:Board, cell:Vector2i, all_moves:Array)->bool:
+	var piece_on_cell:=board.get_piece_on_cell(cell)
+	if not Position.is_valid_cell(cell):
+		return true
+	elif piece_on_cell != null:
+		if  piece_on_cell.color != color:
+			all_moves.append(cell)
+		return true
+	else:		
+		all_moves.append(cell)	
+		return false

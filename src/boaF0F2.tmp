@@ -1,10 +1,11 @@
-[gd_scene load_steps=11 format=3 uid="uid://cmnsfl7wbrhvk"]
+[gd_scene load_steps=12 format=3 uid="uid://cmnsfl7wbrhvk"]
 
 [ext_resource type="Script" path="res://src/board.gd" id="1_0olvf"]
 [ext_resource type="Texture2D" uid="uid://cthudwt1cq0lv" path="res://assets/gfx/128h/square brown dark_png_128px.png" id="1_6mrw8"]
 [ext_resource type="Texture2D" uid="uid://cojefpo7epbdt" path="res://assets/gfx/128h/square brown light_png_128px.png" id="2_y1vxm"]
 [ext_resource type="Texture2D" uid="uid://4keu84m3r4mp" path="res://assets/gfx/128h/square gray dark _png_128px.png" id="3_y5587"]
 [ext_resource type="Texture2D" uid="uid://c6vmm4p4blfq0" path="res://assets/gfx/128h/square gray light _png_128px.png" id="4_xfgn3"]
+[ext_resource type="PackedScene" uid="uid://cf4aumbvka6ry" path="res://src/highlight.tscn" id="7_ecidw"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_lbd33"]
 texture = ExtResource("1_6mrw8")
@@ -37,7 +38,14 @@ sources/7 = SubResource("TileSetAtlasSource_mk2d5")
 tile_set = SubResource("TileSet_lqiuo")
 format = 2
 layer_0/name = "default"
-layer_1/name = "Layer1"
+layer_1/name = ""
+layer_1/enabled = true
+layer_1/modulate = Color(1, 1, 1, 1)
+layer_1/y_sort_enabled = false
+layer_1/y_sort_origin = 0
+layer_1/z_index = 0
+layer_1/tile_data = PackedInt32Array()
 script = ExtResource("1_0olvf")
 
-[node name="highlights" type="Node2D" parent="."]
+[node name="Highlight" parent="." instance=ExtResource("7_ecidw")]
+position = Vector2(70, 182)

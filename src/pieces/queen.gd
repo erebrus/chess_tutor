@@ -2,13 +2,25 @@ extends Piece
 class_name Queen
 
 
-func get_valid_moves()->Array[Vector2i]:
+func get_valid_moves(board:Board)->Array[Vector2i]:
 	var all_moves:Array[Vector2i] = []
-	for x in range(-8,9):
-		for y in range(-8,9):
-			if (x == 0 and y!=0) or \
-				(y == 0 and x!=0) or \
-				(x == y) or (x == -y): 
-					all_moves.append(board_position.cell+Vector2i(x,y))
+	
+	for mod in [-1,1]:
+		for x in range(1,9):
+			var cell:=board_position.cell+Vector2i(mod*x,0)
+			if add_if_valid_move_or_take(board, cell, all_moves):
+				break
+		for y in range(1,9):
+			var cell:=board_position.cell+Vector2i(0, mod*y)
+			if add_if_valid_move_or_take(board, cell, all_moves):
+				break
+				
+				
+	for mod_x in [-1,1]:
+		for mod_y in [-1,1]:
+			for i in range(1,9):
+				var cell:=board_position.cell+Vector2i(mod_x*i,mod_y*i)
+				if add_if_valid_move_or_take(board, cell, all_moves):
+					break
 	
 	return  Position.get_only_valid_cells(all_moves)

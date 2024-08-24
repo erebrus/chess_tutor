@@ -21,7 +21,7 @@ static func is_valid_cell(_cell:Vector2i)->bool:
 	return true
 	
 static func cell_to_notation(_cell:Vector2i)->String:
-	if is_valid_cell(_cell):
+	if not is_valid_cell(_cell):
 		printerr("%s is invalid position" % _cell)
 		assert(false)
 	return "%s%s" % ["abcdefgh"[_cell.x], str(_cell.y+1)]

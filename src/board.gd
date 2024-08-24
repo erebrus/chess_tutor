@@ -14,8 +14,10 @@ const DARK_SQUARE_ID=4
 
 var mode :Types.Mode = Types.Mode.PLAY
 var side:Types.PieceColor = Types.PieceColor.WHITE
-
+var move:int = 0
 var pieces := {}
+var history := []
+var history_idx :=-1
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -26,18 +28,29 @@ func _ready():
 	Events.move_successful.connect(_on_move_successful)
 	create_board();
 	Events.turn_changed.emit(side)
-	
+	add_record(pieces, null,Vector2.ZERO)
+	move=1
 #	get_cell_tile_data(0, Vector2.ZERO).set_custom_data("piece")
 
-func _on_move_successful(piece:Piece):
+func _on_move_successful(_piece:Piece):
 	if side == Types.PieceColor.WHITE:
 		side = Types.PieceColor.BLACK
 	else:
 		side = Types.PieceColor.WHITE
+		move += 1
 	Events.turn_changed.emit(side)
 		
 func _on_piece_taken(piece:Piece):
 	piece.queue_free()
+	
+func add_record(_pieces,piece:Piece, cell, taken:Piece=null):
+	history_idx += 1
+	var move_record = HistoryEntry.create_from_board(_pieces,move, piece, cell, taken)			
+	if piece:
+		Logger.info(str(move_record))
+	history.append(move_record)
+	
+
 func _on_piece_move_requested(piece:Piece, pos:Vector2):
 	var cell := local_to_map(to_local(pos))
 	var tentative := pieces.duplicate()
@@ -56,12 +69,18 @@ func _on_piece_move_requested(piece:Piece, pos:Vector2):
 			return
 		
 		if check_pieces(tentative):
+			
+			
 			pieces = tentative
 			Events.move_successful.emit(piece)
+			var origin_cell = piece.board_position.cell
 			piece.move_to(Position.from_cell(cell))			
 			piece.position = map_to_local(cell)
+			add_record(tentative, piece, origin_cell, taken)
+
 			if taken:
-				Events.piece_taken.emit(taken)			
+				Events.piece_taken.emit(taken)	
+				
 			
 			
 			
@@ -91,7 +110,7 @@ func _on_piece_selected(piece:Piece):
 		h.position  = map_to_local(move)
 		
 
-func _on_piece_unselected(piece:Piece):
+func _on_piece_unselected(_piece:Piece):
 	while $highlights.get_child_count()>0:
 		$highlights.remove_child($highlights.get_child(0))
 	
@@ -140,4 +159,36 @@ func get_piece_on_cell(cell:Vector2i)->Piece:
 		return pieces[cell]
 	else:
 		return null
-		
+func back():
+	if history_idx>0:
+		restore_board(history_idx - 1)
+
+func forward():
+	if history_idx< history.size()-1:
+		restore_board(history_idx + 1)
+	
+func restore_board(idx:int):
+	history_idx=idx
+	for cell in pieces.keys():
+		var piece = pieces[cell]
+		pieces.erase(cell)
+		piece.queue_free()
+	
+	for cell in history[idx].snapshot:
+		var marker:PieceMarker = history[idx].snapshot[cell]
+		var piece:Piece = marker.create_piece()
+		piece.board_position=Position.from_cell(cell)
+		pieces[cell] = piece
+		piece.visible=false
+		if idx==history.size()-1 and piece.color == side:
+			piece.active=true
+		add_child(piece)
+		piece.position = map_to_local(piece.board_position.cell)
+		piece.visible=true		
+	Logger.info ("restored %s" % history[idx])
+			
+func _unhandled_key_input(_event: InputEvent) -> void:
+	if Input.is_action_just_pressed("ui_left"):
+		back()
+	if Input.is_action_just_pressed("ui_right"):
+		forward()

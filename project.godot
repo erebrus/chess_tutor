@@ -20,7 +20,6 @@ config/icon="res://icon.svg"
 Logger="*res://addons/gs_logger/logger.gd"
 Types="*res://src/common/types.gd"
 Events="*res://src/common/events.gd"
-RuntimeDebugTools="*res://addons/runtime_debug_tools/scenes/remote_inspector.tscn"
 
 [display]
 
@@ -30,4 +29,4 @@ window/size/resizable=false
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/Todo_Manager/plugin.cfg", "res://addons/gs_logger/plugin.cfg", "res://addons/runtime_debug_tools/plugin.cfg")
+enabled=PackedStringArray("res://addons/Todo_Manager/plugin.cfg", "res://addons/gs_logger/plugin.cfg")

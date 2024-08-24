@@ -12,7 +12,8 @@ var highlightScene:PackedScene = preload("res://src/highlight.tscn")
 const LIGHT_SQUARE_ID=5
 const DARK_SQUARE_ID=4
 
-var mode:Types.PieceColor = Types.PieceColor.WHITE
+var mode :Types.Mode = Types.Mode.PLAY
+var side:Types.PieceColor = Types.PieceColor.WHITE
 
 var pieces := {}
 
@@ -20,12 +21,69 @@ var pieces := {}
 func _ready():
 	Events.piece_selected.connect(_on_piece_selected)
 	Events.piece_unselected.connect(_on_piece_unselected)
+	Events.piece_move_requested.connect(_on_piece_move_requested)
+	Events.piece_taken.connect(_on_piece_taken)
+	Events.move_successful.connect(_on_move_successful)
 	create_board();
+	Events.turn_changed.emit(side)
+	
 #	get_cell_tile_data(0, Vector2.ZERO).set_custom_data("piece")
 
-func _on_piece_selected(piece:Piece):
+func _on_move_successful(piece:Piece):
+	if side == Types.PieceColor.WHITE:
+		side = Types.PieceColor.BLACK
+	else:
+		side = Types.PieceColor.WHITE
+	Events.turn_changed.emit(side)
+		
+func _on_piece_taken(piece:Piece):
+	piece.queue_free()
+func _on_piece_move_requested(piece:Piece, pos:Vector2):
+	var cell := local_to_map(to_local(pos))
+	var tentative := pieces.duplicate()
+	var taken:Piece
+	if cell in piece.get_valid_moves(tentative):				
+		if get_piece_on_cell(cell) == null:
+			tentative.erase(piece.board_position.cell)
+			tentative[cell]=piece
+		elif get_piece_on_cell(cell).color != piece.color:
+			taken = get_piece_on_cell(cell)
+			tentative.erase(cell)
+			tentative.erase(piece.board_position.cell)
+			tentative[cell]=piece
+		else:
+			Events.move_failed.emit(piece)
+			return
+		
+		if check_pieces(tentative):
+			pieces = tentative
+			Events.move_successful.emit(piece)
+			piece.move_to(Position.from_cell(cell))			
+			piece.position = map_to_local(cell)
+			if taken:
+				Events.piece_taken.emit(taken)			
+			
+			
+			
+func get_king_cell(tentative:Dictionary, _side:Types.PieceColor):
+	for cell in tentative:
+		if tentative[cell] is King and tentative[cell].color == _side:
+			return cell
+	assert(false)
+	return Vector2i.ONE*-1
 	
-	var moves=piece.get_valid_moves(self)
+func check_pieces(tentative:Dictionary)->bool:
+	var king_cell = get_king_cell(tentative,side)
+	for cell in tentative:
+		var piece:Piece = tentative[cell] if cell in tentative else null
+		if piece.color == side:
+			continue
+		if king_cell in piece.get_valid_moves(tentative):
+			return false
+	return true	
+	
+func _on_piece_selected(piece:Piece):	
+	var moves=piece.get_valid_moves(pieces)
 	print("adding highlight for moves %s" % [moves])
 	for move in moves:
 		var h = highlightScene.instantiate()
@@ -48,8 +106,8 @@ func create_board():
 			set_cell(0,Vector2i(x,y),source_id, Vector2i.ZERO)
 			draw_black = not draw_black
 
-	#add_pawns(6, Types.PieceColor.WHITE)
-	#add_pawns(1, Types.PieceColor.BLACK)
+	add_pawns(6, Types.PieceColor.WHITE)
+	add_pawns(1, Types.PieceColor.BLACK)
 	add_back_rank(7,Types.PieceColor.WHITE)
 	add_back_rank(0,Types.PieceColor.BLACK)
 
@@ -66,11 +124,11 @@ func add_piece(pieceScene:PackedScene, cell:Vector2i, piece_color:Types.PieceCol
 func add_back_rank(y:int, piece_color:Types.PieceColor)->void:
 	add_piece(rookScene, Vector2i(0,y), piece_color)
 	add_piece(knightScene, Vector2i(1,y), piece_color)
-	#add_piece(bishopScene, Vector2i(2,y), piece_color)
-	#add_piece(queenScene, Vector2i(3,y), piece_color)
+	add_piece(bishopScene, Vector2i(2,y), piece_color)
+	add_piece(queenScene, Vector2i(3,y), piece_color)
 	add_piece(kingScene, Vector2i(4,y), piece_color)
-	#add_piece(bishopScene, Vector2i(5,y), piece_color)
-	#add_piece(knightScene, Vector2i(6,y), piece_color)
+	add_piece(bishopScene, Vector2i(5,y), piece_color)
+	add_piece(knightScene, Vector2i(6,y), piece_color)
 	add_piece(rookScene, Vector2i(7,y), piece_color)
 
 func add_pawns(y:int, piece_color:Types.PieceColor)->void:

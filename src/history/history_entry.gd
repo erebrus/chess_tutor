@@ -22,7 +22,7 @@ static func create_from_board(pieces:Dictionary, _move:int, piece:Piece, _origin
 		var _piece = pieces[cell]
 		var marker :PieceMarker= PieceMarker.create(get_type_from_piece(_piece), _piece.color)
 		ret.snapshot [cell] = marker
-	
+	Logger.info("Created entry: %s" % ret)
 	return ret
 	
 static func get_type_from_piece(piece:Piece)->Types.PieceType:

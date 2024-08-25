@@ -131,7 +131,7 @@ func create_board():
 		draw_black = not draw_black
 		for x in range(8):
 			var source_id = DARK_SQUARE_ID if draw_black else LIGHT_SQUARE_ID
-			print("cell %s = %d" % [Vector2i(x,y), source_id])
+			#print("cell %s = %d" % [Vector2i(x,y), source_id])
 			set_cell(0,Vector2i(x,y),source_id, Vector2i.ZERO)
 			draw_black = not draw_black
 
@@ -186,6 +186,8 @@ func forward():
 	
 func restore_variation(variation:Variation):
 	history=variation.get_full_history()
+	side=history.size() % 2
+	move = ceil(history.size()/2.0)
 	to_end()
 	
 func restore_board(idx:int):

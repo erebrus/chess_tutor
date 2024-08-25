@@ -72,7 +72,7 @@ func _on_variation_name_text_changed() -> void:
 	current_variation.name = variation_name.text
 
 func _update_current_variation_ui():
-	current_variation_text.text = current_variation.to_notation()
+	current_variation_text.text = current_variation.to_notation(true)
 	variation_name.text = current_variation.name
 
 func _unhandled_key_input(event: InputEvent) -> void:
@@ -99,9 +99,11 @@ func load_save(path):
 		child.queue_free()
 		
 	current_variation=root_variation
+	root_variation.verify_parenthood()
 	add_variation_to_panel(root_variation, false)
 	for v in current_variation.get_all_variations():
 		add_variation_to_panel(v, false)
+	variation_list.get_child(0).select()
 	
 
 func _on_file_dialog_file_selected(path: String) -> void:

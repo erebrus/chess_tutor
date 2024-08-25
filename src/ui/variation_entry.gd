@@ -19,7 +19,7 @@ func _on_move_added(entry:HistoryEntry):
 	update_ui()
 	
 func update_ui():
-	text=variation.to_notation()
+	text=variation.to_notation(true)
 	
 func _on_variation_selected(_variation: Variation):
 	if _variation==variation:

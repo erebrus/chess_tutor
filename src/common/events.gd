@@ -8,7 +8,10 @@ signal piece_taken(piece:Piece)
 signal move_successful(piece:Piece)
 signal move_failed(piece:Piece)
 signal turn_changed(side:Types.PieceColor)
+
+signal move_added(entry:HistoryEntry)
 signal board_changed(history:Array)
+
 signal move_to_start_requested()
 signal move_back_requested()
 signal move_forward_requested()

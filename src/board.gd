@@ -7,7 +7,7 @@ var pawnScene:PackedScene = preload("res://src/pieces/pawn.tscn")
 var rookScene:PackedScene = preload("res://src/pieces/rook.tscn")
 var kingScene:PackedScene = preload("res://src/pieces/king.tscn")
 var queenScene:PackedScene = preload("res://src/pieces/queen.tscn")
-var highlightScene:PackedScene = preload("res://src/highlight.tscn")
+var highlightScene:PackedScene = preload("res://src/ui/highlight.tscn")
 
 const LIGHT_SQUARE_ID=5
 const DARK_SQUARE_ID=4
@@ -83,6 +83,7 @@ func _on_piece_move_requested(piece:Piece, pos:Vector2):
 			piece.position = map_to_local(cell)
 
 			add_record(tentative, piece, origin_cell, taken)
+			Events.move_added.emit(HistoryEntry.create_from_board(tentative,move, piece, origin_cell, taken))
 			Events.move_successful.emit(piece)
 
 

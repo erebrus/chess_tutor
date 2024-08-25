@@ -1,6 +1,6 @@
 extends Panel
 
-const ItemScene:PackedScene = preload("res://src/history/variation_entry.tscn")
+const ItemScene:PackedScene = preload("res://src/ui/variation_entry.tscn")
 @onready var variation_list: VBoxContainer = %VariationList
 @onready var current_variation_text: Label = %CurrentVariation
 @onready var variation_name: TextEdit = %VariationName
@@ -72,3 +72,30 @@ func _on_variation_name_text_changed() -> void:
 func _update_current_variation_ui():
 	current_variation_text.text = current_variation.to_notation()
 	variation_name.text = current_variation.name
+
+func _unhandled_key_input(event: InputEvent) -> void:
+	if Input.is_action_just_pressed("save"):
+		save()
+	if Input.is_action_just_pressed("load"):
+		load_save()
+		
+func save():
+	#var ok=ResourceFormatSaver._recognize(root_variation)
+	var result = ResourceSaver.save(root_variation, "user://last_var.tres")
+	Logger.info("save result. %s" % result)
+	
+	
+func load_save():
+	root_variation = ResourceLoader.load("user://last_var.tres") as Variation
+	while variation_list.get_child_count():
+		var child = variation_list.get_child(0)
+		variation_list.remove_child(child)
+		child.queue_free()
+		
+	current_variation=root_variation
+	add_variation_to_panel(root_variation, false)
+	for v in current_variation.get_all_variations():
+		add_variation_to_panel(v, false)
+	
+	
+		

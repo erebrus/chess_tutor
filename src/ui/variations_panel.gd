@@ -49,9 +49,11 @@ func _on_delete_button_pressed() -> void:
 	for ve in variation_list.get_children():
 		if ve.variation == current_variation:
 			entry_to_remove = ve
+			ve.variation.parent.children.erase(ve.variation)
 			break
 	variation_list.remove_child(entry_to_remove)
 	entry_to_remove.queue_free()
+	
 
 	current_variation=parent_variation
 	select_variation_from_list(parent_variation)

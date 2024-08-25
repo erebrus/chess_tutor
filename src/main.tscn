@@ -23,10 +23,19 @@ offset_bottom = 0.0
 grow_horizontal = 0
 grow_vertical = 0
 
-[node name="VariationsPanel" parent="CanvasLayer" instance=ExtResource("3_mbwlb")]
+[node name="VariationsPanel" parent="CanvasLayer" node_paths=PackedStringArray("file_dialog") instance=ExtResource("3_mbwlb")]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -255.0
 offset_bottom = 512.0
 grow_horizontal = 0
+file_dialog = NodePath("../FileDialog")
+
+[node name="FileDialog" type="FileDialog" parent="CanvasLayer"]
+initial_position = 2
+size = Vector2i(400, 400)
+dialog_hide_on_ok = true
+access = 1
+
+[connection signal="file_selected" from="CanvasLayer/FileDialog" to="CanvasLayer/VariationsPanel" method="_on_file_dialog_file_selected"]

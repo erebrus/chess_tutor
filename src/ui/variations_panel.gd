@@ -4,11 +4,13 @@ const ItemScene:PackedScene = preload("res://src/ui/variation_entry.tscn")
 @onready var variation_list: VBoxContainer = %VariationList
 @onready var current_variation_text: Label = %CurrentVariation
 @onready var variation_name: TextEdit = %VariationName
+@export var file_dialog:FileDialog
 
 var root_variation:Variation = Variation.new()
 var current_variation:Variation = root_variation
 
 func _ready() -> void:
+	assert(file_dialog)
 	Events.move_added.connect(update_current)
 	Events.variation_selected.connect(_on_variation_selected)
 	add_variation_to_panel(current_variation,false)
@@ -75,18 +77,22 @@ func _update_current_variation_ui():
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("save"):
-		save()
+		open_file_dialog(FileDialog.FileMode.FILE_MODE_SAVE_FILE)
 	if Input.is_action_just_pressed("load"):
-		load_save()
-		
-func save():
+		open_file_dialog(FileDialog.FileMode.FILE_MODE_OPEN_FILE)
+
+func open_file_dialog(mode:FileDialog.FileMode):
+	file_dialog.file_mode = mode
+	file_dialog.popup()
+	
+func save(path):
 	#var ok=ResourceFormatSaver._recognize(root_variation)
-	var result = ResourceSaver.save(root_variation, "user://last_var.tres")
+	var result = ResourceSaver.save(root_variation, path)
 	Logger.info("save result. %s" % result)
 	
 	
-func load_save():
-	root_variation = ResourceLoader.load("user://last_var.tres") as Variation
+func load_save(path):
+	root_variation = ResourceLoader.load(path) as Variation
 	while variation_list.get_child_count():
 		var child = variation_list.get_child(0)
 		variation_list.remove_child(child)
@@ -97,5 +103,10 @@ func load_save():
 	for v in current_variation.get_all_variations():
 		add_variation_to_panel(v, false)
 	
-	
-		
+
+func _on_file_dialog_file_selected(path: String) -> void:
+	Logger.info("File selected:%s" % path)
+	if file_dialog.file_mode == FileDialog.FileMode.FILE_MODE_OPEN_FILE:
+		load_save(path)
+	else:
+		save(path)

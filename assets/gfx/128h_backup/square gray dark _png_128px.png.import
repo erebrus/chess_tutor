@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://4keu84m3r4mp"
-path="res://.godot/imported/square gray dark _png_128px.png-d7870ab8771fbc4093b5f44e5eceb6e8.ctex"
+path="res://.godot/imported/square gray dark _png_128px.png-319c34a95f7747d2ddc7f8e764263dcd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/gfx/128h/square gray dark _png_128px.png"
-dest_files=["res://.godot/imported/square gray dark _png_128px.png-d7870ab8771fbc4093b5f44e5eceb6e8.ctex"]
+source_file="res://assets/gfx/128h_backup/square gray dark _png_128px.png"
+dest_files=["res://.godot/imported/square gray dark _png_128px.png-319c34a95f7747d2ddc7f8e764263dcd.ctex"]
 
 [params]
 

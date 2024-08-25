@@ -9,8 +9,8 @@ var kingScene:PackedScene = preload("res://src/pieces/king.tscn")
 var queenScene:PackedScene = preload("res://src/pieces/queen.tscn")
 var highlightScene:PackedScene = preload("res://src/ui/highlight.tscn")
 
-const LIGHT_SQUARE_ID=5
-const DARK_SQUARE_ID=4
+const LIGHT_SQUARE_ID=1
+const DARK_SQUARE_ID=0
 
 var mode :Types.Mode = Types.Mode.PLAY
 var side:Types.PieceColor = Types.PieceColor.WHITE

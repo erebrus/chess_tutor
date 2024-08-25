@@ -24,7 +24,7 @@ static func cell_to_notation(_cell:Vector2i)->String:
 	if not is_valid_cell(_cell):
 		printerr("%s is invalid position" % _cell)
 		assert(false)
-	return "%s%s" % ["abcdefgh"[_cell.x], str(_cell.y+1)]
+	return "%s%s" % ["abcdefgh"[_cell.x], str(8-_cell.y)]
 		
 static func notation_to_cell(string_notation:String)->Vector2i:
 	if string_notation.length()!=2:
@@ -55,7 +55,7 @@ static func notation_to_cell(string_notation:String)->Vector2i:
 		printerr("%s is invalid position" % string_notation)
 		assert(false)
 	else:
-		ret.y=int(string_notation[1])
+		ret.y=8-int(string_notation[1])
 	
 	return ret
 

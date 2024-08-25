@@ -58,7 +58,11 @@ func add_record(_pieces,piece:Piece, cell, taken:Piece=null):
 	history.append(move_record)
 	Events.board_changed.emit(history.slice(0,history_idx+1))
 
-func _on_piece_move_requested(piece:Piece, pos:Vector2):
+func _is_move_castle(piece, pos)->bool:
+	return piece is King and abs(pos.x-piece.board_position.cell.x)==2
+
+
+func _on_piece_move_requested(piece:Piece, pos:Vector2i):
 	var cell := local_to_map(to_local(pos))
 	var tentative := pieces.duplicate()
 	var taken:Piece
@@ -66,6 +70,7 @@ func _on_piece_move_requested(piece:Piece, pos:Vector2):
 		if get_piece_on_cell(cell) == null:
 			tentative.erase(piece.board_position.cell)
 			tentative[cell]=piece
+				
 		elif get_piece_on_cell(cell).color != piece.color:
 			taken = get_piece_on_cell(cell)
 			tentative.erase(cell)
@@ -80,9 +85,21 @@ func _on_piece_move_requested(piece:Piece, pos:Vector2):
 			
 			pieces = tentative
 			var origin_cell = piece.board_position.cell
+			if _is_move_castle(piece, cell):
+					var rook_cell:Vector2i = Vector2i(cell.x+sign(cell.x-origin_cell.x), cell.y)
+					if rook_cell.x==1:
+						rook_cell.x=0 #TODO ugly AF
+						
+					var rook:Piece = tentative[rook_cell] as Piece
+					var rook_new_cell:Vector2i = cell+Vector2i(sign(cell.x-origin_cell.x)*-1,0)
+	
+					rook.move_to(Position.from_cell(rook_new_cell))
+					rook.position = map_to_local(rook_new_cell)
+					tentative.erase(rook_cell)
+					tentative[rook_new_cell]=rook
+					
 			piece.move_to(Position.from_cell(cell))			
 			piece.position = map_to_local(cell)
-
 			add_record(tentative, piece, origin_cell, taken)
 			Events.move_added.emit(HistoryEntry.create_from_board(tentative,move, piece, origin_cell, taken))
 			Events.move_successful.emit(piece)

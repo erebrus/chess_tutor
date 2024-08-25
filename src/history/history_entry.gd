@@ -1,16 +1,23 @@
 class_name HistoryEntry extends Resource
 
+enum Special{NONE, SHORT_CASTLE,LONG_CASTLE}
 @export var snapshot={}
 @export var move:int=1
 @export var origin_cell:Vector2i
 @export var target_cell:Vector2i
 @export var piece:PieceMarker
 @export var taken:PieceMarker
+@export var special:Special=Special.NONE
 
 
 
 static func create_from_board(pieces:Dictionary, _move:int, piece:Piece, _origin_cell:Vector2i, _taken:Piece=null):
 	var ret = HistoryEntry.new()
+	if piece is King:
+		if piece.board_position.cell-_origin_cell == Vector2i (2,0):
+			ret.special=Special.SHORT_CASTLE
+		elif piece.board_position.cell-_origin_cell == Vector2i (-2,0):
+			ret.special=Special.LONG_CASTLE
 	ret.move = _move
 	if piece !=null:
 		ret.origin_cell = _origin_cell
@@ -24,7 +31,9 @@ static func create_from_board(pieces:Dictionary, _move:int, piece:Piece, _origin
 		ret.snapshot [cell] = marker
 	Logger.info("Created entry: %s" % ret)
 	return ret
-	
+
+
+		
 static func get_type_from_piece(piece:Piece)->Types.PieceType:
 	if piece is King:
 		return Types.PieceType.KING
@@ -52,6 +61,13 @@ func to_move_notation() -> String:
 	if taken:
 		return "%d. %s%sx%s" % [move,piece_code(piece.piece),Position.cell_to_notation(origin_cell), Position.cell_to_notation(target_cell)]
 	else:
-		return "%d. %s%s" % [move,piece_code(piece.piece), Position.cell_to_notation(target_cell)]
+		match special:
+			Special.SHORT_CASTLE:
+				return "%d. O-O" % move 
+				
+			Special.LONG_CASTLE:
+				return "%d. O-O-O" % move
+			_:
+				return "%d. %s%s" % [move,piece_code(piece.piece), Position.cell_to_notation(target_cell)]
 #func get_snapshot_str()-> String:
 	#for 

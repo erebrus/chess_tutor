@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://dh57dl88rkjcj"]
+
+[ext_resource type="Script" path="res://src/history/variation_entry.gd" id="1_rrrp8"]
+
+[node name="VariationEntry" type="Label"]
+mouse_filter = 1
+script = ExtResource("1_rrrp8")
+
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

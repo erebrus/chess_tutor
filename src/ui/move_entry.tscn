@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://dhs7sn83dh6cm"]
+
+[node name="MoveEntry" type="Label"]
+size_flags_horizontal = 3
+text = "1. Rb5"
+vertical_alignment = 1

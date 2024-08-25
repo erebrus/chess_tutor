@@ -185,9 +185,8 @@ func forward():
 		restore_board(history_idx + 1)
 	
 func restore_variation(variation:Variation):
-	history=variation.history
-	history_idx=variation.history.size()-1
-	restore_board(history_idx)
+	history=variation.get_full_history()
+	to_end()
 	
 func restore_board(idx:int):
 	history_idx=idx

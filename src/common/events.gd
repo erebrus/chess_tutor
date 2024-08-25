@@ -16,3 +16,5 @@ signal move_to_start_requested()
 signal move_back_requested()
 signal move_forward_requested()
 signal move_to_end_requested()
+
+signal variation_requested(variation:Variation)

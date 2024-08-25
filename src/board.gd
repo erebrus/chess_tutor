@@ -30,6 +30,7 @@ func _ready():
 	Events.move_forward_requested.connect(forward)
 	Events.move_to_end_requested.connect(to_end)
 	Events.move_to_start_requested.connect(to_start)
+	Events.variation_requested.connect(restore_variation)
 	create_board();
 	Events.turn_changed.emit(side)
 	await get_tree().process_frame
@@ -182,6 +183,11 @@ func back():
 func forward():
 	if history_idx< history.size()-1:
 		restore_board(history_idx + 1)
+	
+func restore_variation(variation:Variation):
+	history=variation.history
+	history_idx=variation.history.size()-1
+	restore_board(history_idx)
 	
 func restore_board(idx:int):
 	history_idx=idx

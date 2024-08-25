@@ -43,5 +43,14 @@ static func get_type_from_piece(piece:Piece)->Types.PieceType:
 func _to_string() -> String:
 	return "%d - %s %s -> %s (%s)" % [move, piece, Position.cell_to_notation(origin_cell) , Position.cell_to_notation(target_cell), taken]
 
+func piece_code(piece: Types.PieceType)-> String:
+	if piece == Types.PieceType.PAWN:
+		return ""
+	return Types.PieceType.keys()[piece].left(1).to_lower()
+func to_move_notation() -> String:
+	if taken:
+		return "%d. %s%sx%s" % [move,piece_code(piece.piece),Position.cell_to_notation(origin_cell), Position.cell_to_notation(target_cell)]
+	else:
+		return "%d. %s%s" % [move,piece_code(piece.piece), Position.cell_to_notation(target_cell)]
 #func get_snapshot_str()-> String:
 	#for 

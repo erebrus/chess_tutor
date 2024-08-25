@@ -26,11 +26,17 @@ func _ready():
 	Events.piece_move_requested.connect(_on_piece_move_requested)
 	Events.piece_taken.connect(_on_piece_taken)
 	Events.move_successful.connect(_on_move_successful)
+	Events.move_back_requested.connect(back)
+	Events.move_forward_requested.connect(forward)
+	Events.move_to_end_requested.connect(to_end)
+	Events.move_to_start_requested.connect(to_start)
 	create_board();
 	Events.turn_changed.emit(side)
+	await get_tree().process_frame
 	add_record(pieces, null,Vector2.ZERO)
 	move=1
 #	get_cell_tile_data(0, Vector2.ZERO).set_custom_data("piece")
+
 
 func _on_move_successful(_piece:Piece):
 	if side == Types.PieceColor.WHITE:
@@ -49,7 +55,7 @@ func add_record(_pieces,piece:Piece, cell, taken:Piece=null):
 	if piece:
 		Logger.info(str(move_record))
 	history.append(move_record)
-	
+	Events.board_changed.emit(history.slice(0,history_idx+1))
 
 func _on_piece_move_requested(piece:Piece, pos:Vector2):
 	var cell := local_to_map(to_local(pos))
@@ -72,11 +78,13 @@ func _on_piece_move_requested(piece:Piece, pos:Vector2):
 			
 			
 			pieces = tentative
-			Events.move_successful.emit(piece)
 			var origin_cell = piece.board_position.cell
 			piece.move_to(Position.from_cell(cell))			
 			piece.position = map_to_local(cell)
+
 			add_record(tentative, piece, origin_cell, taken)
+			Events.move_successful.emit(piece)
+
 
 			if taken:
 				Events.piece_taken.emit(taken)	
@@ -159,6 +167,13 @@ func get_piece_on_cell(cell:Vector2i)->Piece:
 		return pieces[cell]
 	else:
 		return null
+		
+func to_start():
+	restore_board(0)
+	
+func to_end():
+	restore_board(history.size()-1)
+	
 func back():
 	if history_idx>0:
 		restore_board(history_idx - 1)
@@ -185,6 +200,7 @@ func restore_board(idx:int):
 		add_child(piece)
 		piece.position = map_to_local(piece.board_position.cell)
 		piece.visible=true		
+	Events.board_changed.emit(history.slice(0,history_idx+1))
 	Logger.info ("restored %s" % history[idx])
 			
 func _unhandled_key_input(_event: InputEvent) -> void:

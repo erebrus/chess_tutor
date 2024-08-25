@@ -70,6 +70,15 @@ func _on_variation_name_focus_exited() -> void:
 
 func _on_variation_name_text_changed() -> void:
 	current_variation.name = variation_name.text
+	get_current_entry().update_ui()
+	
+func get_current_entry()->VariationEntry:
+	for child in variation_list.get_children():
+		if child.variation == current_variation:
+			return child
+			
+	return null
+
 
 func _update_current_variation_ui():
 	current_variation_text.text = current_variation.to_notation(true)

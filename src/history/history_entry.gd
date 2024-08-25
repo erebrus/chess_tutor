@@ -44,9 +44,8 @@ func _to_string() -> String:
 	return "%d - %s %s -> %s (%s)" % [move, piece, Position.cell_to_notation(origin_cell) , Position.cell_to_notation(target_cell), taken]
 
 func piece_code(piece: Types.PieceType)-> String:
-	if piece == Types.PieceType.PAWN:
-		return ""
-	return Types.PieceType.keys()[piece].left(1).to_lower()
+	return Types.PIECE_SHORT_NAME[piece]
+	
 func to_move_notation() -> String:
 	if not piece:
 		return ""

@@ -4,6 +4,7 @@ extends Node
 enum PieceColor {WHITE, BLACK}
 enum Mode {PLAY, MOVE, FREE}
 enum PieceType {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING}
+const PIECE_SHORT_NAME = ["","N","B","R","Q","K"]
 
 #var PieceScenes={
 	#PieceType.PAWN: preload("res://src/pieces/pawn.tscn"),

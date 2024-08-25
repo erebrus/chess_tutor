@@ -3,7 +3,12 @@
 [ext_resource type="Script" path="res://src/ui/variation_entry.gd" id="1_rrrp8"]
 
 [node name="VariationEntry" type="Label"]
+custom_minimum_size = Vector2(0, 50)
+offset_right = 119.0
+offset_bottom = 50.0
 mouse_filter = 1
+text = "Vienna Gambit:
+asdfsadf"
 script = ExtResource("1_rrrp8")
 
 [connection signal="gui_input" from="." to="." method="_on_gui_input"]

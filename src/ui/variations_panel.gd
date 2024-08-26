@@ -4,6 +4,8 @@ const ItemScene:PackedScene = preload("res://src/ui/variation_entry.tscn")
 @onready var variation_list: VBoxContainer = %VariationList
 @onready var current_variation_text: Label = %CurrentVariation
 @onready var variation_name: TextEdit = %VariationName
+@onready var comments_edit: TextEdit = %CommentsEdit
+
 @export var file_dialog:FileDialog
 
 var root_variation:Variation = Variation.new()
@@ -26,7 +28,7 @@ func add_variation_to_panel(_variation:Variation, select:=true):
 	
 func _on_variation_selected(variation:Variation):
 	current_variation=variation
-	_update_current_variation_ui()
+	_update_current_variation_ui(true)
 	Events.variation_requested.emit(current_variation)
 	
 func update_current(entry:HistoryEntry):
@@ -36,7 +38,7 @@ func update_current(entry:HistoryEntry):
 func _on_create_button_pressed() -> void:
 	current_variation = Variation.create_new("", current_variation)
 	add_variation_to_panel(current_variation)
-	_update_current_variation_ui()
+	_update_current_variation_ui(true)
 
 	
 
@@ -82,9 +84,12 @@ func get_current_entry()->VariationEntry:
 	return null
 
 
-func _update_current_variation_ui():
-	current_variation_text.text = current_variation.to_notation(true)
+func _update_current_variation_ui(edit:=false):
+	current_variation_text.text = "Current Variation: %s" % current_variation.to_notation(true)
 	variation_name.text = current_variation.name
+	if edit:
+		comments_edit.text = current_variation.comments
+
 
 func _unhandled_key_input(event: InputEvent) -> void:
 	if Input.is_action_just_pressed("save"):
@@ -123,3 +128,8 @@ func _on_file_dialog_file_selected(path: String) -> void:
 		load_save(path)
 	else:
 		save(path)
+
+
+func _on_comments_edit_text_changed() -> void:
+	current_variation.comments=comments_edit.text
+	_update_current_variation_ui(false)

@@ -4,7 +4,7 @@ class_name Variation extends Resource
 @export var history:Array = []
 @export var parent:Variation
 @export var children:Array[Variation]=[]
-
+@export var comments:String=""
 
 func _to_string() -> String:
 	return "%s: %s" % [name, to_notation()]

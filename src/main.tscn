@@ -34,20 +34,20 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -768.0
-offset_top = -512.0
-offset_right = -513.0
-offset_bottom = 0.0
+offset_left = -256.0
+offset_top = -1024.0
+offset_right = -1.0
+offset_bottom = -512.0
 grow_horizontal = 0
 grow_vertical = 0
 
 [node name="VariationsPanel" parent="CanvasLayer" node_paths=PackedStringArray("file_dialog") instance=ExtResource("3_mbwlb")]
-custom_minimum_size = Vector2(512, 512)
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -255.0
-offset_bottom = 512.0
+offset_left = -768.0
+offset_top = 512.0
+offset_bottom = 1024.0
 grow_horizontal = 0
 file_dialog = NodePath("../FileDialog")
 

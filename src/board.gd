@@ -18,6 +18,7 @@ var move:int = 0
 var pieces := {}
 var history := []
 var history_idx :=-1
+var moves_allowed:=true
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -35,6 +36,7 @@ func _ready():
 	Events.turn_changed.emit(side)
 	await get_tree().process_frame
 	add_record(pieces, null,Vector2.ZERO)
+	Events.move_added.emit(HistoryEntry.create_from_board(pieces,move, null, Vector2.ZERO, null))
 	move=1
 #	get_cell_tile_data(0, Vector2.ZERO).set_custom_data("piece")
 
@@ -55,7 +57,10 @@ func add_record(_pieces,piece:Piece, cell, taken:Piece=null):
 	var move_record = HistoryEntry.create_from_board(_pieces,move, piece, cell, taken)			
 	if piece:
 		Logger.info(str(move_record))
+	if history_idx<history.size():
+		history.slice(0,history_idx)
 	history.append(move_record)
+		
 	Events.board_changed.emit(history.slice(0,history_idx+1))
 
 func _is_move_castle(piece, pos)->bool:
@@ -202,13 +207,15 @@ func forward():
 		restore_board(history_idx + 1)
 	
 func restore_variation(variation:Variation):
+	moves_allowed = variation.children.is_empty()
 	history=variation.get_full_history()
-	side=history.size() % 2
-	move = ceil(history.size()/2.0)
+
 	to_end()
 	
 func restore_board(idx:int):
 	history_idx=idx
+	side = (history_idx) % 2
+	move = ceil((history_idx)/2.0)
 	for cell in pieces.keys():
 		var piece = pieces[cell]
 		pieces.erase(cell)
@@ -220,7 +227,7 @@ func restore_board(idx:int):
 		piece.board_position=Position.from_cell(cell)
 		pieces[cell] = piece
 		piece.visible=false
-		if idx==history.size()-1 and piece.color == side:
+		if moves_allowed and piece.color == side:
 			piece.active=true
 		add_child(piece)
 		piece.position = map_to_local(piece.board_position.cell)
